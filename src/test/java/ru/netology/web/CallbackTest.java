@@ -1,51 +1,62 @@
 package ru.netology.web;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
-
-import static org.junit.jupiter.api.Assertions.*;
+import static com.codeborne.selenide.Selenide.*;
 
 public class CallbackTest {
-    private WebDriver driver;
 
-    @BeforeAll
-    static void setUpAll() {
-        WebDriverManager.chromedriver().setup();
-
-
-    }
-
-    @BeforeEach
-    void setUp() {
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--headless");
-        driver = new ChromeDriver(chromeOptions);
-    }
-
-    @AfterEach
-    void tearDown() {
-        driver.quit();
-        driver = null;
+    @Test
+    void shouldGetSuccessForm() {
+        open("http://localhost:9999");
+        $("[class='input__control'][type='text']").setValue("Василий");
+        $("[class='input__control'][type='tel']").setValue("+79270000000");
+        $(".checkbox__box").click();
+        $("[type='button'][class='button button_view_extra button_size_m button_theme_alfa-on-white']").click();
+        $(".Success_successBlock__2L3Cw").shouldHave(Condition.exactText("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время."));
     }
 
     @Test
-    void shouldTestV1() {
-        driver.get("http://localhost:9999");
-        driver.findElement(By.cssSelector("[class='input__control'][type='text']")).sendKeys("Василий");
-        driver.findElement(By.cssSelector("[class='input__control'][type='tel']")).sendKeys("+79270000000");
-        driver.findElement(By.cssSelector(".checkbox__box")).click();
-        driver.findElement(By.cssSelector("[type='button'][class='button button_view_extra button_size_m button_theme_alfa-on-white']")).click();
-        String text = driver.findElement(By.className("Success_successBlock__2L3Cw")).getText();
-        assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", text.trim());
+    void shouldGetEmptyNameAlert() {
+        open("http://localhost:9999");
+        $("[type='button'][class='button button_view_extra button_size_m button_theme_alfa-on-white']").click();
+        $("[data-test-id='name'].input_invalid .input__sub").shouldHave(Condition.exactText("Поле обязательно для заполнения"));
+    }
+
+    @Test
+    void shouldGetEmptyPhoneAlert() {
+        open("http://localhost:9999");
+        $("[class='input__control'][type='text']").setValue("Василий");
+        $("[type='button'][class='button button_view_extra button_size_m button_theme_alfa-on-white']").click();
+        $("[data-test-id='phone'].input_invalid .input__sub").shouldHave(Condition.exactText("Поле обязательно для заполнения"));
+    }
+
+    @Test
+    void shouldGetIncorrectNameAlert() {
+        open("http://localhost:9999");
+        $("[class='input__control'][type='text']").setValue("test");
+        $("[class='input__control'][type='tel']").setValue("+79270000000");
+        $("[type='button'][class='button button_view_extra button_size_m button_theme_alfa-on-white']").click();
+        $("[data-test-id='name'].input_invalid .input__sub").shouldHave(Condition.exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
+    }
+
+    @Test
+    void shouldGetIncorrectPhoneAlert() {
+        open("http://localhost:9999");
+        $("[class='input__control'][type='text']").setValue("Иван");
+        $("[class='input__control'][type='tel']").setValue("955");
+        $("[type='button'][class='button button_view_extra button_size_m button_theme_alfa-on-white']").click();
+        $("[data-test-id='phone'].input_invalid .input__sub").shouldHave(Condition.exactText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
+    }
+
+    @Test
+    void shouldGetCheckboxAlert() {
+        open("http://localhost:9999");
+        $("[class='input__control'][type='text']").setValue("Иван");
+        $("[class='input__control'][type='tel']").setValue("+79270000000");
+        $("[type='button'][class='button button_view_extra button_size_m button_theme_alfa-on-white']").click();
+        $(".input_invalid[data-test-id='agreement']").shouldHave(Condition.exactText("Я соглашаюсь с условиями обработки и использования моих персональных данных и разрешаю сделать запрос в бюро кредитных историй"));
     }
 
 }
