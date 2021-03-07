@@ -21,7 +21,7 @@ public class CallbackTest {
     void shouldGetEmptyNameAlert() {
         open("http://localhost:9999");
         $("[type='button'][class='button button_view_extra button_size_m button_theme_alfa-on-white']").click();
-        $("span.input_invalid > span > span.input__sub").shouldHave(Condition.exactText("Поле обязательно для заполнения"));
+        $("[data-test-id='name'].input_invalid .input__sub").shouldHave(Condition.exactText("Поле обязательно для заполнения"));
     }
 
     @Test
@@ -29,7 +29,7 @@ public class CallbackTest {
         open("http://localhost:9999");
         $("[class='input__control'][type='text']").setValue("Василий");
         $("[type='button'][class='button button_view_extra button_size_m button_theme_alfa-on-white']").click();
-        $("[data-test-id='phone'].input_invalid > span > span.input__sub").shouldHave(Condition.exactText("Поле обязательно для заполнения"));
+        $("[data-test-id='phone'].input_invalid .input__sub").shouldHave(Condition.exactText("Поле обязательно для заполнения"));
     }
 
     @Test
@@ -38,7 +38,7 @@ public class CallbackTest {
         $("[class='input__control'][type='text']").setValue("test");
         $("[class='input__control'][type='tel']").setValue("+79270000000");
         $("[type='button'][class='button button_view_extra button_size_m button_theme_alfa-on-white']").click();
-        $("[data-test-id='name'].input_invalid > span > span.input__sub").shouldHave(Condition.exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
+        $("[data-test-id='name'].input_invalid .input__sub").shouldHave(Condition.exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class CallbackTest {
         $("[class='input__control'][type='text']").setValue("Иван");
         $("[class='input__control'][type='tel']").setValue("955");
         $("[type='button'][class='button button_view_extra button_size_m button_theme_alfa-on-white']").click();
-        $("[data-test-id='phone'].input_invalid > span > span.input__sub").shouldHave(Condition.exactText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
+        $("[data-test-id='phone'].input_invalid .input__sub").shouldHave(Condition.exactText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
     }
 
     @Test
